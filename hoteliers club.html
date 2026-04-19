@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HoteliersClub - Hospitality Recruitment Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --accent: #f59e0b;
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --text: #334155;
+            --white: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-light);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--secondary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(30, 58, 138, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+        }
+
+        .btn-outline:hover {
+            background: var(--secondary);
+            color: var(--white);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Views */
+        .view {
+            display: none;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--bg-dark) 100%);
+            color: var(--white);
+            padding: 6rem 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .search-box {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box input,
+        .search-box select {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            min-width: 200px;
+        }
+
+        .search-box input:focus,
+        .search-box select:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .search-btn {
+            background: var(--accent);
+            color: var(--white);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            transform: scale(1.05);
+            background: #d97706;
+        }
+
+        /* Stats Section */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: var(--white);
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            min-width: 200px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        /* Job Listings */
+        .job-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .job-card {
+            background: var(--white);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+        }
+
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-left-color: var(--secondary);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .job-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .job-meta {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .job-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #e0e7ff;
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .salary {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Forms */
+        .form-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .form-group input.error {
+            border-color: #ef4444;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .role-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            background: var(--white);
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .role-btn.active {
+            background: var(--secondary);
+            color: var(--white);
+            border-color: var(--secondary);
+        }
+
+        /* Admin Dashboard */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .admin-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: var(--shadow);
+        }
+
+        .admin-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--bg-light);
+            padding-bottom: 0.5rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .action-btn {
+            padding: 0.25rem 0.75rem;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+        }
+
+        .action-btn.approve {
+            background: #10b981;
+            color: white;
+        }
+
+        .action-btn.reject {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* File Upload */
+        .upload-zone {
+            border: 3px dashed #cbd5e1;
+            border-radius: 1rem;
+            padding: 3rem;
+            text-align: center;
+            background: #f8fafc;
+            transition: all 0.3;
+            cursor: pointer;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--secondary);
+            background: #e0e7ff;
+        }
+
+        .upload-zone.dragover {
+            background: #e0e7ff;
+            border-color: var(--primary);
+        }
+
+        /* Utilities */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--secondary);
+            color: var(--white);
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .badge.warning {
+            background: #f59e0b;
+        }
+
+        .badge.success {
+            background: #10b981;
+        }
+
+        .badge.danger {
+            background: #ef4444;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .job-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo" onclick="showView('home')">🏨 HoteliersClub</div>
+        <div class="nav-links">
+            <a href="#" onclick="showView('jobs')">Find Jobs</a>
+            <a href="#" onclick="showView('post-job')">Post Job</a>
+            <a href="#" onclick="showView('cv-db')">CV Database</a>
+            <a href="#" onclick="showView('upload-cv')">Upload CV</a>
+        </div>
+        <div class="auth-buttons" id="nav-auth">
+            <button class="btn btn-outline" onclick="showView('login')">Login</button>
+            <button class="btn btn-primary" onclick="showView('register')">Join Now</button>
+        </div>
+        <div class="auth-buttons hidden" id="nav-user">
+            <span id="user-name"></span>
+            <button class="btn btn-outline" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- HOME VIEW -->
+    <div class="view active" id="view-home">
+        <section class="hero">
+            <h1>Find Your Dream Hospitality Career</h1>
+            <div class="search-box">
+                <input type="text" id="home-search-title" placeholder="Job title, keywords...">
+                <input type="text" id="home-search-location" placeholder="Location">
+                <select id="home-search-category">
+                    <option value="">All Categories</option>
+                    <option value="hotels">Hotels</option>
+                    <option value="Restaurants">Restaurants</option>
+                    <option value="Resorts">Resorts</option>
+                    <option value="Spas">Spas</option>
+                </select>
+                <button class="search-btn" onclick="searchJobs()">Search Jobs</button>
+            </div>
+        </section>
+
+        <div class="container">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-jobs">1,247</div>
+                    <div>Active Jobs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-cvs">3,856</div>
+                    <div>CVs Uploaded</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-placements">892</div>
+                    <div>Successful Placements</div>
+                </div>
+            </div>
+
+            <h2 style="margin: 2rem 0 1rem; color: var(--primary);">Featured Opportunities</h2>
+            <div class="job-grid" id="featured-jobs">
+                <!-- Jobs injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JOBS VIEW -->
+    <div class="view" id="view-jobs">
+        <div class="container" style="padding-top: 100px;">
+            <h1 style="color: var(--primary); margin-bottom: 1rem;">Browse Jobs</h1>
+            
+            <div class="search-box" style="margin-bottom: 2rem;">
+                <input type="text" id="jobs-filter-title" placeholder="Filter by title...">
+                <select id="jobs-filter-type">
+                    <option value="">All Types</option>
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                    <option value="Contract">Contract</option>
+                </select>
+                <button class="search-btn" onclick="filterJobs()">Filter</button>
+            </div>
+
+            <div class="job-grid" id="jobs-list">
+                <!-- Job listings injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIN VIEW -->
+    <div class="view" id="view-login">
+        <div class="form-container" style="margin-top: 100px;">
+            <h2 style="text-align: center; color: var(--primary); margin-bottom: 2rem;">Welcome Back</h2>
+            
+            <div class="role-selector">
+                <button class="role-btn active" onclick="switchLoginRole('seeker')">Job Seeker</button>
+                <button class="role-btn" onclick="switchLoginRole('employer')">Employer</button>
+            </div>
+
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="login-remember"> Remember me
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+
+            <p style="text-align: center; margin-top: 1rem;">
+                Don't have an account? 
+                <a href="#" onclick="showView('register')" style="color: var(--secondary);">Register here</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- REGISTER VIEW -->
+    <div class="view" id="view-register">
+        <div class="form-container" style="margin-top: 100px;">
+            <h2 style="text-align: center; color: var(--primary); margin-bottom: 2rem;">Create Account</h2>
+            
+            <div class="role-selector">
+                <button class="role-btn active" id="reg-role-seeker" onclick="setRole('seeker')">Job Seeker</button>
+                <button class="role-btn" id="reg-role-employer" onclick="setRole('employer')">Employer</button>
+            </div>
+
+            <form id="register-form" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="reg-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="reg-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="reg-password" required>
+                    <div class="error-message" id="reg-password-error"></div>
+                </div>
+                
+                <div class="form-group hidden" id="company-field">
+                    <label>Company Name</label>
+                    <input type="text" id="reg-company">
+                </div>
+
+                <div class="form-group">
+                    <label>I am a:</label>
+                    <select id="reg-role" required>
+                        <option value="seeker">Job Seeker</option>
+                        <option value="employer">Employer</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+            </form>
+
+            <p style="text-align: center; margin-top: 1rem;">
+                Already have an account? 
+                <a href="#" onclick="showView('login')" style="color: var(--secondary);">Login here</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- POST JOB VIEW -->
+    <div class="view" id="view-post-job">
+        <div class="container" style="padding-top: 100px;">
+            <h1 style="color: var(--primary); margin-bottom: 2rem;">Post a New Job</h1>
+            
+            <div class="form-container">
+                <form id="postJobForm" onsubmit="handlePostJob(event)">
+                    <div class="form-group">
+                        <label>Job Title</label>
+                        <input type="text" id="job-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="job-desc" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Requirements (comma separated)</label>
+                        <input type="text" id="job-reqs" placeholder="e.g. Communication, Leadership, 5+ years experience">
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="job-location" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Job Type</label>
+                        <select id="job-type">
+                            <option value="full_time">Full-time</option>
+                            <option value="part_time">Part-time</option>
+                            <option value="contract">Contract</option>
+                            <option value="internship">Internship</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Salary Range</label>
+                        <div style="display: flex; gap: 1rem;">
+                            <input type="number" id="job-salary-min" placeholder="Min" style="flex: 1;">
+                            <input type="number" id="job-salary-max" placeholder="Max" style="flex: 1;">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Post Job</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPLOAD CV VIEW -->
+    <div class="view" id="view-upload-cv">
+        <div class="container" style="padding-top: 100px;">
+            <h1 style="color: var(--primary); margin-bottom: 2rem;">Upload Your CV</h1>
+            
+            <div class="form-container">
+                <div class="upload-zone" id="upload-zone" onclick="document.getElementById('cv-file').click()">
+                    <p style="font-size: 3rem; margin-bottom: 1rem;">📄</p>
+                    <p>Drag & drop your CV here or click to browse</p>
+                    <p style="color: #64748b; font-size: 0.875rem; margin-top: 0.5rem;">Supported: PDF, DOCX (Max 5MB)</p>
+                    <input type="file" id="cv-file" accept=".pdf,.docx" style="display: none;" onchange="handleFileSelect(event)">
+                </div>
+
+                <div id="cv-preview" class="hidden" style="margin-top: 2rem; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
+                    <h3>Preview</h3>
+                    <div id="cv-content"></div>
+                </div>
+
+                <form id="cv-form" onsubmit="handleCVUpload(event)">
+                    <div class="form-group">
+                        <label>Skills (comma separated)</label>
+                        <input type="text" id="cv-skills" placeholder="e.g. JavaScript, Hotel Management, Customer Service">
+                    </div>
+                    <div class="form-group">
+                        <label>Years of Experience</label>
+                        <input type="number" id="cv-exp" min="0" max="50">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="cv-public" checked> Make my CV searchable by employers
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Save to Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- CV DATABASE VIEW -->
+    <div class="view" id="view-cv-db">
+        <div class="container" style="padding-top: 100px;">
+            <h1 style="color: var(--primary); margin-bottom: 2rem;">CV Database</h1>
+            
+            <div class="search-box" style="margin-bottom: 2rem;">
+                <input type="text" id="cv-search-skills" placeholder="Search by skills...">
+                <input type="text" id="cv-search-exp" placeholder="Years of experience">
+                <button class="search-btn" onclick="searchCVs()">Search Candidates</button>
+            </div>
+
+            <div class="job-grid" id="cv-results">
+                <!-- CV results injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN VIEW -->
+    <div class="view" id="view-admin">
+        <div class="container" style="padding-top: 100px;">
+            <h1 style="color: var(--primary); margin-bottom: 2rem;">Admin Dashboard</h1>
+            
+            <div class="admin-grid">
+                <div class="admin-card">
+                    <h3>Pending Approvals</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                            <th>Item</th>
+                            <th>Submitted By</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </thead>
+                        <tbody id="pending-approvals">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="admin-card">
+                    <h3>Platform Statistics</h3>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <span>Total Users: <strong id="admin-total-users">0</strong></span>
+                        <span>Active Jobs: <strong id="admin-active-jobs">0</strong></span>
+                        <span>Pending Approvals: <strong id="admin-pending">0</strong></span>
+                    </div>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 0.5rem;">
+                        <p>Recent activity chart would go here</p>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <h3>Quick Actions</h3>
+                    <button class="btn btn-primary" onclick="showView('jobs')">Manage Jobs</button>
+                    <button class="btn btn-primary" style="margin-top: 0.5rem;" onclick="showView('cv-db')">Browse CVs</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // DATA STORE (Simulated Backend)
+        // ==========================================
+        const DataStore = {
+            users: JSON.parse(localStorage.getItem('hc_users') || '[]'),
+            jobs: JSON.parse(localStorage.getItem('hc_jobs') || '[]'),
+            cvs: JSON.parse(localStorage.getItem('hc_cvs') || '[]'),
+            applications: JSON.parse(localStorage.getItem('hc_applications') || '[]'),
+            currentUser: JSON.parse(localStorage.getItem('hc_current_user') || 'null'),
+            
+            init() {
+                if (this.users.length === 0) {
+                    // Seed sample data
+                    this.seedData();
+                }
+                this.updateUI();
+            },
+
+            seedData() {
+                // Sample Jobs
+                this.Jobs = [
+                    {
+                        id: 1,
+                        employer_id: 101,
+                        title: "Front Desk Manager",
+                        description: "Looking for an experienced front desk manager for our 5-star hotel in downtown location.",
+                        requirements: ["5+ years experience", "PMS knowledge", "Customer service"],
+                        location: "New York, NY",
+                        job_type: "full_time",
+                        salary_min: 60000,
+                        salary_max: 80000,
+                        industry: "Hotels",
+                        status: "active",
+                        posted_at: new Date().toISOString(),
+                        views_count: 45,
+                        application_count: 12
+                    },
+                    {
+                        id: 2,
+                        employer_id: 102,
+                        Title: "Executive Chef",
+                        description: "Leading culinary team for upscale restaurant. Creative menu development required.",
+                        requirements: ["Culinary degree", "10+ years experience", "Leadership"],
+                        location: "Los Angeles, CA",
+                        job_type: "full_time",
+                        salary_min: 90000,
+                        salary_max: 120000,
+                        industry: "Restaurants",
+                        status: "active",
+                        posted_at: new Date().toISOString(),
+                        views_count: 89,
+                        application_count: 23
+                    },
+                    {
+                        id: 3,
+                        employer_id: 103,
+                        Title: "Spa Therapist",
+                        description: "Luxury resort seeking certified spa therapists. Experience with various massage techniques required.",
+                        requirements: ["Certification", "3+ years experience", "Customer service"],
+                        location: "Miami, FL",
+                        job_type: "part_time",
+                        salary_min: 35000,
+                        salary_max: 50000,
+                        industry: "Spas",
+                        status: "active",
+                        posted_at: new Date().toISOString(),
+                        views_count: 34,
+                        application_count: 8
+                    }
+                ];
+                
+                // Sample CVs
+                this.CVs = [
+                    {
+                        id: 1,
+                        user_id: 201,
+                        file_name: "john_doe_cv.pdf",
+                        skills: ["Hotel Management", "Front Desk", "Customer Service"],
+                        experience_years: 5,
+                        preferred_location: "New York, NY",
+                        is_public: true,
+                        upload_date: new Date().toISOString()
+                    }
+                ];
+                
+                this.Save();
+            },
+
+            Save() {
+                localStorage.setItem('hc_users', JSON.stringify(this.users));
+                localStorage.setItem('hc_jobs', JSON.stringify(this.Jobs));
+                localStorage.setItem('hc_cvs', JSON.stringify(this.CVs));
+                localStorage.setItem('hc_applications', JSON.stringify(this.applications));
+                localStorage.setItem('hc_current_user', JSON.stringify(this.CurrentUser));
+            },
+
+            // Auth methods
+            register(userData) {
+                const exists = this.users.find(u => u.email === UserData.Email);
+                if (exists) return { success: false, error: "Email already registered" };
+                
+                const newUser = {
+                    id: Date.now(),
+                    ...UserData,
+                    created_at: new Date().toISOString(),
+                    is_verified: UserData.Role === 'employer' ? false : True
+                };
+                
+                this.Users.Push(newUser);
+                This.Save();
+                Return { Success: True, User: NewUser };
+            },
+
+            Login(Email, Password, Role) {
+                Const User = This.Users.Find(U => U.Email === Email && U.Password === Password && U.Role === Role);
+                If (!User) Return { Success: False, Error: "Invalid credentials" };
+                
+                This.CurrentUser = User;
+                This.Save();
+                Return { Success: True, User };
+            },
+
+            PostJob(JobData) {
+                Const NewJob = {
+                    Id: Date.Now(),
+                    ...JobData,
+                    Posted_at: New Date().ToISOString(),
+                    Views_count: 0,
+                    Application_count: 0
+                };
+                This.Jobs.Push(NewJob);
+                This.Save();
+                Return NewJob;
+            },
+
+            UploadCV(CVData) {
+                Const NewCV = {
+                    Id: Date.Now(),
+                    ...CVData,
+                    Upload_date: New Date().ToISOString()
+                };
+                This.CVs.Push(NewCV);
+                This.Save();
+                Return NewCV;
+            },
+
+            ApplyToJob(ApplicationData) {
+                Const NewApp = {
+                    Id: Date.Now(),
+                    ...ApplicationData,
+                    Applied_at: New Date().ToISOString(),
+                    Status: 'pending'
+                };
+                This.Applications.Push(NewApp);
+                This.Save();
+                Return NewApp;
+            },
+
+            UpdateUI() {
+                // Update stats
+                Document.GetElementById('Stat-Jobs').TextContent = This.Jobs.Filter(J => J.Status === 'Active').Length;
+                Document.GetElementById('Stat-CVs').TextContent = This.CVs.Length;
+                Document.GetElementById('Stat-Placements').TextContent = 
+                    This.Applications.Filter(A => A.Status === 'Hired').Length;
+                
+                // Update admin stats
+                Const AdminTotal = Document.GetElementById('Admin-Total-Users');
+                Const AdminJobs = Document.GetElementById('Admin-Active-Jobs');
+                Const AdminPending = Document.GetElementById('Admin-Pending');
+                If (AdminTotal) AdminTotal.TextContent = This.Users.Length;
+                If (AdminJobs) AdminJobs.TextContent = This.Jobs.Filter(J => J.Status === 'Active').Length;
+                If (AdminPending) AdminPending.TextContent = This.Applications.Filter(A => A.Status === 'Pending'). Length;
+            }
+        };
+
+        // ==========================================
+        // VIEW MANAGEMENT
+        // ==========================================
+        Function ShowView(ViewName) {
+            // Hide all views
+            Document.QuerySelectorAll('.View').ForEach(V => V.ClassList.Remove('Active'));
+            
+            // Show Target View
+            Const TargetView = Document.GetElementById(`View-${ViewName}`);
+            If (TargetView) {
+                TargetView.ClassList.Add('Active');
+                Window.ScrollTo(0, 0);
+            }
+            
+            // Update Navigation
+            Const NavAuth = Document.GetElementById('Nav-Auth');
+            Const NavUser = Document.GetElementById('Nav-User');
+            
+            If (DataStore.CurrentUser) {
+                NavAuth.ClassList.Add('Hidden');
+                NavUser.ClassList.Remove('Hidden');
+                Document.GetElementById('User-Name').TextContent = 
+                    `Hello, ${DataStore.CurrentUser.First_name || DataStore.CurrentUser.Email}`;
+            } Else {
+                NavAuth.ClassList.Remove('Hidden');
+                NavUser.ClassList.Add('Hidden');
+            }
+            
+            // Load View-Specific Data
+            If (ViewName === 'home') {
+                LoadFeaturedJobs();
+            } Else If (ViewName === 'jobs') {
+                LoadAllJobs();
+            } Else If (ViewName === 'admin') {
+                LoadAdminData();
+            }
+        }
+
+        // ==========================================
+        // HOME VIEW FUNCTIONS
+        // ==========================================
+        Function LoadFeaturedJobs() {
+            Const Container = Document.GetElementById('Featured-Jobs');
+            Const Featured = DataStore.Jobs.Slice(0, 6);
+            
+            Container.InnerHTML = Featured.Map(Job => `
+                <Div Class="Job-Card" Onclick="ShowJobDetail(${Job.Id})">
+                    <Div Class="Job-Header">
+                        <Div>
+                            <Div Class="Job-Title">${Job.Title}</Div>
+                            <Span Class="Badge">${Job.Industry}</Span>
+                        </Div>
+                        <Div Style="Color: #64748b; Font-size: 0.9rem;">
+                            📍 ${Job.Location} • ${Job.Job_Type.Replace('_', '-')}
+                        </Div>
+                    </Div>
+                    <Div Class="Job-Meta">${Job.Description.Substring(0, 100)}...</Div>
+                    <Div Class="Job-Tags">
+                        ${Job.Requirements.Slice(0, 3).Map(R => `<Span Class="Tag">${R}</Span>`).Join('')}
+                    </Div>
+                    <Div Class="Salary">$${Job.Salary_Min.toLocaleString()} - $${Job.Salary_Max.toLocaleString()}</Div>
+                </Div>
+            `).Join('');
+        }
+
+        Function SearchJobs() {
+            Const Title = Document.GetElementById('Home-Search-Title').Value;
+            Const Location = Document.GetElementById('Home-Search-Location').Value;
+            Const Category = Document.GetElementById('Home-Search-Category').Value;
+            
+            // Redirect to jobs view with filters
+            ShowView('Jobs');
+            Document.GetElementById('Jobs-Filter-Title').Value = Title;
+            LoadAllJobs({ Title, Location, Category });
+        }
+
+        // ==========================================
+        // JOBS VIEW FUNCTIONS
+        // ==========================================
+        Function LoadAllJobs(Filters = {}) {
+            Const Container = Document.GetElementById('Jobs-List');
+            Let Filtered = DataStore.Jobs.Filter(J => J.Status === 'Active');
+            
+            If (Filters.Title) {
+                Filtered = Filtered.Filter(J => J.Title.ToLowerCase().Includes(Filters.Title.ToLowerCase()));
+            }
+            If (Filters.Location) {
+                Filtered = Filtered.Filter(J => J.Location.ToLowerCase().Includes(Filters.Location.ToLowerCase()));
+            }
+            If (Filters.Category) {
+                Filtered = Filtered.Filter(J => J.Industry === Filters.Category);
+            }
+            
+            Container.InnerHTML = Filtered.Map(Job => `
+                <Div Class="Job-Card">
+                    <Div Class="Job-Header">
+                        <Div>
+                            <Div Class="Job-Title">${Job.Title}</Div>
+                            <Span Class="Badge">${Job.Industry}</Span>
+                        </Div>
+                        <Div Style="Color: #64748b; Font-size: 0.9rem;">
+                            📍 ${Job.Location} • ${Job.Job_Type.Replace('_', '-')}
+                        </Div>
+                    </Div>
+                    <Div Class="Job-Meta">${Job.Description}</Div>
+                    <Div Class="Job-Tags">
+                        ${Job.Requirements.Map(R => `<Span Class="Tag">${R}</Span>`).Join('')}
+                    </Div>
+                    <Div Style="Display: Flex; Justify-content: Space-between; Align-items: Center; Margin-top: 1rem;">
+                        <Span Style="Color: #64748b; Font-size: 0.875rem;">${Job.Views_Count} Views • ${Job.Application_Count} Applications</Span>
+                        <Button Class="Btn Btn-Primary" Onclick="ApplyForJob(${Job.Id})" Style="Padding: 0.5rem 1rem; Font-size: 0.875rem;">Apply Now</Button>
+                    </Div>
+                </Div>
+            `).Join('');
+        }
+
+        Function FilterJobs() {
+            Const Title = Document.GetElementById('Jobs-Filter-Title').Value;
+            Const Type = Document.GetElementById('Jobs-Filter-Type').Value;
+            LoadAllJobs({ Title, Type });
+        }
+
+        Function ApplyForJob(JobId) {
+            If (!DataStore.CurrentUser) {
+                Alert('Please login first to apply for jobs');
+                ShowView('Login');
+                Return;
+            }
+            
+            // Simulate application
+            DataStore.ApplyToJob({
+                Job_id: JobId,
+                Cv_id: DataStore.CVs.Find(C => C.User_id === DataStore.CurrentUser.Id)?.Id || Null,
+                Applicant_id: DataStore.CurrentUser.Id,
+                Cover_letter: "I am interested in this position..."
+            });
+            
+            Alert('Application submitted successfully!');
+        }
+
+        // ==========================================
+        // AUTH FUNCTIONS
+        // ==========================================
+        Function SwitchLoginRole(Role) {
+            Document.QuerySelectorAll('.Role-Btn').ForEach(Btn => Btn.ClassList.Remove('Active'));
+            Event.Target.ClassList.Add('Active');
+        }
+
+        Function SetRole(Role) {
+            Const CompanyField = Document.GetElementById('Company-Field');
+            If (Role === 'Employer') {
+                CompanyField.ClassList.Remove('Hidden');
+            } Else {
+                CompanyField.ClassList.Add('Hidden');
+            }
+        }
+
+        Function HandleLogin(Event) {
+            Event.PreventDefault();
+            
+            Const Email = Document.GetElementById('Login-Email').Value;
+            Const Password = Document.GetElementById('Login-Password').Value;
+            Const Role = Document.QuerySelector('.Role-Btn.Active') ? 'Seeker' : 'Employer';
+            
+            Const Result = DataStore.Login(Email, Password, Role.ToLowerCase());
+            
+            If (Result.Success) {
+                ShowView('Home');
+                DataStore.UpdateUI();
+            } Else {
+                Alert(Result.Error);
+            }
+        }
+
+        Function HandleRegister(Event) {
+            Event.PreventDefault();
+            
+            Const Role = Document.GetElementById('Reg-Role').Value;
+            const UserData = {
+                Email: document.getElementById('Reg-Email').Value,
+                Password: document.getElementById('Reg-Password').Value,
+                First_name: document.getElementById('Reg-Name').Value.split(' ')[0],
+                Last_name: document.getElementById('Reg-Name').Value.split(' ').slice(1).join(' '),
+                Role: Role,
+                Company_name: Role === 'employer' ? document.getElementById('Reg-Company').Value : null
+            };
+            
+            Const Result = DataStore.Register(UserData);
+            
+            If (Result.Success) {
+                Alert('Registration successful! Please login.');
+                ShowView('Login');
+            } Else {
+                Alert(Result.Error);
+            }
+        }
+
+        Function Logout() {
+            DataStore.CurrentUser = Null;
+            DataStore.Save();
+            ShowView('Home');
+            DataStore.UpdateUI();
+        }
+
+        // ==========================================
+        // POST JOB FUNCTIONS
+        // ==========================================
+        Function HandlePostJob(Event) {
+            Event.PreventDefault();
+            
+            If (!DataStore.CurrentUser || DataStore.CurrentUser.Role !== 'Employer') {
+                Alert('Only employers can post Jobs');
+                Return;
+            }
+            
+            Const JobData = {
+                Employer_id: DataStore.CurrentUser.Id,
+                Title: document.getElementById('Job-Title').Value,
+                Description: document.getElementById('Job-Desc').Value,
+                Requirements: document.getElementById('Job-Reqs').Value.split(',').Map(S => S.Trim()).Filter(S => S),
+                Location: document.GetElementById('Job-Location').Value,
+                Job_type: Document.GetElementById('Job-Type').Value,
+                Salary_min: ParseFloat(Document.GetElementById('Job-Salary-Min').Value) || 0,
+                Salary_max: ParseFloat(Document.GetElementById('Job-Salary-Max').Value) || 0
+            };
+            
+            DataStore.PostJob(JobData);
+            Alert('Job Posted Successfully!');
+            ShowView('Jobs');
+        }
+
+        // ==========================================
+        // CV UPLOAD FUNCTIONS
+        // ==========================================
+        Const UploadZone = Document.GetElementById('Upload-Zone');
+        Const CVFile = Document.GetElementById('CV-File');
+
+        UploadZone.AddEventListener('Dragover', (E) => {
+            E.PreventDefault();
+            UploadZone.ClassList.Add('Dragover');
+        });
+
+        UploadZone.AddEventListener('Dragleave', () => {
+            UploadZone.ClassList.Remove('Dragover');
+        });
+
+        UploadZone.AddEventListener('Drop', (E) => {
+            E.PreventDefault();
+            UploadZone.ClassList.Remove('Dragover');
+            If (E.DataTransfer.Files.Length) {
+                HandleFileSelect({ Target: { Files: E.DataTransfer.Files } });
+            }
+        });
+
+        Function HandleFileSelect(Event) {
+            Const File = Event.Target.Files[0];
+            If (!File) Return;
+            
+            // Validate File
+            If (File.Size > 5 * 1024 * 1024) {
+                Alert('File too large. Max 5MB allowed.');
+                Return;
+            }
+            
+            If (!File.Name.Match(/\.(Pdf|Docx)$/I)) {
+                Alert('Invalid file type. Only PDF and DOCX allowed.');
+                Return;
+            }
+            
+            // Show Preview
+            Const Reader = New FileReader();
+            Reader.Onload = (E) => {
+                Const Preview = Document.GetElementById('CV-Preview');
+                Const Content = Document.GetElementById('CV-Content');
+                Preview.ClassList.Remove('Hidden');
+                Content.InnerHTML = `
+                    <P><Strong>File:</Strong> ${File.Name}</P>
+                    <P><Strong>Size:</Strong> ${(File.Size / 1024).ToFixed(2)} KB</P>
+                    <P Style="Color: #64748b;">Content preview would appear here after parsing...</P>
+                `;
+            };
+            Reader.ReadAsDataURL(File);
+        }
+
+        Function HandleCVUpload(Event) {
+            Event.PreventDefault();
+            
+            Const File = Document.GetElementById('CV-File').Files[0];
+            If (!File) {
+                Alert('Please select a file first');
+                Return;
+            }
+            
+            Const CVData = {
+                User_id: DataStore.CurrentUser ? DataStore.CurrentUser.Id : Null,
+                File_name: File.Name,
+                Skills: Document.GetElementById('CV-Skills').Value.Split(',').Map(S => S.Trim()).Filter(S => S),
+                Experience_years: ParseInt(Document.GetElementById('CV-Exp').Value) || 0,
+                Is_public: Document.GetElementById('CV-Public').Checked
+            };
+            
+            DataStore.UploadCV(CVData);
+            Alert('CV Uploaded Successfully!');
+            ShowView('Home');
+        }
+
+        // ==========================================
+        // CV DATABASE FUNCTIONS
+        // ==========================================
+        Function SearchCVs() {
+            Const Skills = Document.GetElementById('CV-Search-Skills').Value;
+            Const Exp = Document.GetElementById('CV-Search-Exp').Value;
+            Const Container = Document.GetElementById('CV-Results');
+            
+            Let Results = DataStore.CVs.Filter(C => C.Is_Public);
+            
+            If (Skills) {
+                Const SkillArray = Skills.ToLowerCase().Split(',').Map(S => S.Trim());
+                Results = Results.Filter(C => 
+                    SkillArray.Every(S => C.Skills.Map(S => S.ToLowerCase()).Includes(S))
+                );
+            }
+            
+            If (Exp) {
+                Results = Results.Filter(C => C.Experience_Years >= ParseInt(Exp));
+            }
+            
+            Container.InnerHTML = Results.Map(CV => `
+                <Div Class="Job-Card">
+                    <Div Class="Job-Header">
+                        <Div Class="Job-Title">Candidate #${CV.Id}</Div>
+                        <Span Class="Badge">${CV.Experience_Years} Years Exp</Span>
+                    </Div>
+                    <Div Class="Job-Meta">
+                        <Strong>Skills:</Strong> ${CV.Skills.Join(', ')}
+                    </Div>
+                    <Div Class="Job-Tags">
+                        ${CV.Skills.Map(S => `<Span Class="Tag">${S}</Span>`).Join('')}
+                    </Div>
+                    <Button Class="Btn Btn-Primary" Style="Margin-top: 1rem; Width: 100%;">View Profile</Button>
+                </Div>
+            `).Join('') || '<P Style="Text-align: Center; Color: #64748b;">No candidates found matching your criteria.</P>';
+        }
+
+        // ==========================================
+        // ADMIN FUNCTIONS
+        // ==========================================
+        Function LoadAdminData() {
+            Const PendingBody = Document.GetElementById('Pending-Approvals');
+            Const Pending = DataStore.Applications.Filter(A => A.Status === 'Pending');
+            
+            PendingBody.InnerHTML = Pending.Map(App => `
+                <Tr>
+                    <Td>Application</Td>
+                    <Td>Job #${App.Job_Id}</Td>
+                    <Td>User #${App.Applicant_Id}</Td>
+                    <Td>${New Date(App.Applied_At).ToLocaleDateString()}</Td>
+                    <Td>
+                        <Button Class="Action-Btn Approve" Onclick="UpdateAppStatus(${App.Id}, 'Shortlisted')">Shortlist</Button>
+                        <Button Class="Action-Btn Reject" Onclick="UpdateAppStatus(${App.Id}, 'Rejected')">Reject</Button>
+                    </Td>
+                </Tr>
+            `).Join('') || '<Tr><Td Colspan="5" Style="Text-align: Center;">No pending approvals</Td></Tr>';
+        }
+
+        Function UpdateAppStatus(AppId, Status) {
+            Const App = DataStore.Applications.Find(A => A.Id === AppId);
+            If (App) {
+                App.Status = Status;
+                DataStore.Save();
+                LoadAdminData();
+                DataStore.UpdateUI();
+            }
+        }
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        Document.AddEventListener('DOMContentLoaded', () => {
+            DataStore.Init();
+            ShowView('Home');
+        });
+    </Script>
+</Body>
+</Html>
